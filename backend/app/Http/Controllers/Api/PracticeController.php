@@ -12,7 +12,9 @@ class PracticeController extends Controller
 {
     public function __construct(
         private readonly PracticeService $practiceService,
-    ) {}
+    ) {
+        $this->middleware('throttle:ai-actions')->only(['store', 'submit']);
+    }
 
     public function index(Domain $domain, Concept $concept)
     {
