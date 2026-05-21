@@ -1,12 +1,21 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ConceptController;
+
 use App\Http\Controllers\Api\DomainController;
 use App\Http\Controllers\Api\PracticeController;
+use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Route;
 
+// Public
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+
+// Authenticated
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/user', fn () => request()->user());
+    Route::get('/user', fn () => new UserResource(request()->user()));
+    Route::post('/logout', [AuthController::class, 'logout']);
 
     // Domains
     Route::get('/domains/archives', [DomainController::class, 'archives']);
@@ -14,7 +23,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/domains/{id}/force', [DomainController::class, 'forceDelete']);
     Route::apiResource('/domains', DomainController::class);
 
-    // Concepts (nested under domains + standalone)
+    // Concepts
     Route::get('/domains/{domain}/concepts/archives', [ConceptController::class, 'archives']);
     Route::post('/concepts/{id}/restore', [ConceptController::class, 'restore']);
     Route::delete('/concepts/{id}/force', [ConceptController::class, 'forceDelete']);
