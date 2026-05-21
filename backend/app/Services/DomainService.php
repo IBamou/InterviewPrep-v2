@@ -10,6 +10,7 @@ class DomainService
     public function list(int $userId, int $perPage = 15): LengthAwarePaginator
     {
         return Domain::where('user_id', $userId)
+            ->withCount('concepts')
             ->orderBy('created_at', 'desc')
             ->paginate($perPage);
     }
@@ -18,6 +19,7 @@ class DomainService
     {
         return Domain::where('user_id', $userId)
             ->onlyTrashed()
+            ->withCount('concepts')
             ->orderBy('deleted_at', 'desc')
             ->paginate($perPage);
     }
