@@ -6,6 +6,7 @@ use App\Enums\ConceptStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Concept extends Model
@@ -18,12 +19,19 @@ class Concept extends Model
         'title',
         'explanation',
         'status',
+        'total_practice_sessions',
+        'average_rating',
+        'last_practiced_at',
+        'practice_streak',
     ];
 
     protected function casts(): array
     {
         return [
             'status' => ConceptStatus::class,
+            'average_rating' => 'decimal:2',
+            'last_practiced_at' => 'datetime',
+            'practice_streak' => 'array',
         ];
     }
 
@@ -35,5 +43,25 @@ class Concept extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function practiceQuestions(): HasMany
+    {
+        return $this->hasMany(GeneratedQuestion::class);
+    }
+
+    public function resources(): HasMany
+    {
+        return $this->hasMany(Resource::class);
+    }
+
+    public function relations(): HasMany
+    {
+        return $this->hasMany(ConceptRelation::class);
+    }
+
+    public function relatedToMe(): HasMany
+    {
+        return $this->hasMany(ConceptRelation::class, 'related_concept_id');
     }
 }
