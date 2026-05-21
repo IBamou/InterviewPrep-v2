@@ -6,10 +6,15 @@ use App\Models\Concept;
 use App\Models\Domain;
 use App\Models\GeneratedQuestion;
 use App\Models\User;
+use App\Services\GamificationService;
 use Illuminate\Support\Facades\DB;
 
 class ProgressionService
 {
+    public function __construct(
+        private readonly GamificationService $gamification,
+    ) {}
+
     public function computeStats(Concept $concept): array
     {
         $questions = GeneratedQuestion::where('concept_id', $concept->id)
@@ -33,12 +38,20 @@ class ProgressionService
             'practice_streak' => $streak,
         ]);
 
+        $nextTier = $this->gamification->nextTier($concept);
+        $activeTier = $this->gamification->activeTier($concept);
+
         return [
             'total_sessions' => $sets,
             'total_questions_answered' => $count,
             'average_rating' => $avg,
             'last_practiced_at' => $latestPractice,
             'streak' => $streak,
+            'xp' => $concept->xp,
+            'mastery_score' => $concept->mastery_score,
+            'active_tier' => $activeTier,
+            'unlocked_tiers' => $concept->unlocked_tiers,
+            'next_tier' => $nextTier,
         ];
     }
 

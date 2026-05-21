@@ -14,6 +14,7 @@ class PracticeService
     public function __construct(
         private readonly AiGateway $ai,
         private readonly PromptBuilder $prompts,
+        private readonly GamificationService $gamification,
     ) {}
 
     public function generate(Concept $concept, User $user, int $count = 5): Collection
@@ -118,6 +119,13 @@ class PracticeService
 
         $ratings = $updated->pluck('rating')->filter();
 
+        $isFirstToday = GeneratedQuestion::where('concept_id', $concept->id)
+            ->where('user_id', $user->id)
+            ->whereDate('created_at', today())
+            ->count() === $updated->count();
+
+        $gamification = $this->gamification->processSet($concept, $updated, $isFirstToday);
+
         return [
             'set_number' => $setNumber,
             'questions' => $updated,
@@ -127,6 +135,7 @@ class PracticeService
                 'average_rating' => $ratings->isNotEmpty()
                     ? round($ratings->avg(), 2) : null,
             ],
+            'gamification' => $gamification,
         ];
     }
 
