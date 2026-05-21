@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ConceptController;
+
 use App\Http\Controllers\Api\DomainController;
+use App\Http\Controllers\Api\PracticeController;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Route;
 
@@ -26,4 +28,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/concepts/{id}/restore', [ConceptController::class, 'restore']);
     Route::delete('/concepts/{id}/force', [ConceptController::class, 'forceDelete']);
     Route::apiResource('/domains.concepts', ConceptController::class);
+
+    // Practice (nested under domain.concept)
+    Route::get('/domains/{domain}/concepts/{concept}/practice', [PracticeController::class, 'index']);
+    Route::post('/domains/{domain}/concepts/{concept}/practice', [PracticeController::class, 'store']);
+    Route::get('/domains/{domain}/concepts/{concept}/practice/{setNumber}', [PracticeController::class, 'show']);
+    Route::post('/domains/{domain}/concepts/{concept}/practice/{setNumber}', [PracticeController::class, 'submit']);
 });
