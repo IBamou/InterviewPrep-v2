@@ -24,6 +24,13 @@ class ProgressionController extends Controller
         return response()->json([
             'data' => [
                 'stats' => $stats,
+                'gamification' => [
+                    'xp' => $concept->xp,
+                    'tier' => $stats['active_tier'],
+                    'unlocked_tiers' => $concept->unlocked_tiers,
+                    'mastery_score' => $concept->mastery_score,
+                    'next_tier' => $stats['next_tier'],
+                ],
                 'quiz_eligibility' => $quizEligibility,
             ],
         ]);

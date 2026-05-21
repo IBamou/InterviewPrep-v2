@@ -23,6 +23,11 @@ class Concept extends Model
         'average_rating',
         'last_practiced_at',
         'practice_streak',
+        'xp',
+        'unlocked_tiers',
+        'mastery_score',
+        'tier_xp',
+        'tier_ratings',
     ];
 
     protected function casts(): array
@@ -32,6 +37,11 @@ class Concept extends Model
             'average_rating' => 'decimal:2',
             'last_practiced_at' => 'datetime',
             'practice_streak' => 'array',
+            'xp' => 'integer',
+            'unlocked_tiers' => 'array',
+            'mastery_score' => 'decimal:2',
+            'tier_xp' => 'array',
+            'tier_ratings' => 'array',
         ];
     }
 
